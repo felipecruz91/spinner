@@ -1,0 +1,16 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://$FAASD_NODE_IP:8080
+functions:
+  spinner:
+    lang: golang-middleware
+    handler: ./spinner
+    image: ${DOCKER_USER}/spinner:latest
+    build_args:
+      GO111MODULE: on
+    environment:
+      read_timeout: 60s
+      write_timeout: 60s
+    secrets:
+      - secret-api-key

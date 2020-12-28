@@ -1,0 +1,15 @@
+.env
+.vscode
+build
+
+# Compiled files
+*.tfstate
+*.tfstate.backup
+*.terraform.tfstate.lock.info
+
+# Module directory
+.terraform/
+
+*.conf
+
+secret-api-key.txt
