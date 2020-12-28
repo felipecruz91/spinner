@@ -66,9 +66,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("lastMinutes: %s", lastMinutes)
 	lm, _ := strconv.Atoi(lastMinutes)
 
-	var message string
-	var statusCode int
-
 	client := hcloud.NewClient(hcloud.WithToken(token))
 
 	fmt.Println("Checking running servers...")
@@ -78,15 +75,13 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		ListOpts: hcloud.ListOpts{LabelSelector: "managed-by=spinner"},
 	})
 	if err != nil {
-		message = fmt.Sprintf("error retrieving servers. Reason: %s", err.Error())
-		statusCode = http.StatusInternalServerError
-		w.WriteHeader(statusCode)
-		w.Write([]byte(fmt.Sprintf(message)))
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("error retrieving servers. Reason: %s", err.Error())))
 		return
 	}
 
 	if len(servers) == 0 {
-		w.WriteHeader(statusCode)
+		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(fmt.Sprintf("No servers in running state.")))
 		return
 	}
@@ -94,26 +89,22 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	for _, server := range servers {
 		metricIsBelow, err := metricIsBelow(client, server, metricName, mt, lm)
 		if err != nil {
-			message = fmt.Sprintf("unable to check metric. Reason: %s", err.Error())
-			statusCode = http.StatusInternalServerError
-			w.WriteHeader(statusCode)
-			w.Write([]byte(fmt.Sprintf(message)))
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(fmt.Sprintf("unable to check metric. Reason: %s", err.Error())))
 			return
 		}
 
 		if metricIsBelow {
 			_, err := client.Server.Delete(context.Background(), server)
 			if err != nil {
-				message = fmt.Sprintf("failed to delete server. Reason: %s", err.Error())
-				statusCode = http.StatusInternalServerError
-				w.WriteHeader(statusCode)
-				w.Write([]byte(fmt.Sprintf(message)))
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte(fmt.Sprintf("failed to delete server. Reason: %s", err.Error())))
 				return
 			}
 		}
 	}
 
-	w.WriteHeader(statusCode)
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fmt.Sprintf("Done")))
 }
 
@@ -136,16 +127,19 @@ func metricIsBelow(c *hcloud.Client, server *hcloud.Server, metricName string, m
 
 	metricKeyPairs := serverMetrics.TimeSeries[metricName]
 
-	var avg int
-	sum := 0
+	var avg float64
+	sum := 0.0
 	for _, metricKeyPair := range metricKeyPairs {
 		fmt.Printf("Timestamp: %v, Value: %s\n", metricKeyPair.Timestamp, metricKeyPair.Value)
-		val, err2 := strconv.Atoi(metricKeyPair.Value)
+		val, err2 := strconv.ParseFloat(metricKeyPair.Value, 8)
 		if err2 != nil {
 			return false, err2
 		}
 		sum += val
 	}
 
-	return avg < sum/len(metricKeyPairs), nil
+	avg = sum / float64(len(metricKeyPairs))
+	fmt.Printf("avg: %v", avg)
+
+	return avg < float64(metricThreshold), nil
 }
