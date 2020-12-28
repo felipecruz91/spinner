@@ -109,7 +109,7 @@ secret-api-key
 
 Notice that the secret name is referenced in the [spinner.yml](spinner.yml#L16) file.
 
-## Build, push and deploy the function to our gateway
+## Build, push and deploy the `spinner` function to our gateway
 
 Let's replace the following placeholders defined in [spinner.yml](spinner.yml) with the actual faasd node IP and your username from DockerHub.
 
@@ -142,6 +142,33 @@ curl -v \
 <
 * Connection #0 to host 168.119.167.108 left intact
 Server '3374dea2-03ba-45b4-8331-3499e87be20e' created
+```
+
+## Build, push and deploy the `spinner-controller` function to our gateway
+
+The `spinner-controller` serverless function is in charge of deleting servers when they are not needed anymore. This criteria could be one of the followings: `cpu`, `disk.0.iops.read`, `disk.0.iops.write`, `network.0.pps.in`, or `network.0.pps.out`.
+
+Similarly, let's replace the following placeholders defined in [spinner-controller.yml](spinner-controller.yml) too with the actual faasd node IP and your username from DockerHub.
+
+```bash
+sed -i s/\$FAASD_NODE_IP/$FAASD_NODE_IP/g spinner-controller.yml
+sed -i s/\${DOCKER_USER}/$DOCKER_USER/g spinner-controller.yml
+```
+
+Finally, build the image, push it to DockerHub and deploy it to the faasd node:
+
+```cli
+faas-cli up -f spinner-controller.yml
+```
+
+The serverless function will serve the request by checking if there are any running servers that are not doing any work based on the provided criteria.
+
+For instance, if we want to delete any servers whose CPU load is below under 50% in the ast 5 minutes, we would call:
+
+```cli
+curl -v \
+ --header "X-Api-Key: ..." \
+ http://$FAASD_NODE_IP:8080/function/spinner-controller?metric_name=cpu&metric_threshold=50&last_minutes=5
 ```
 
 ## Clean up
