@@ -163,7 +163,7 @@ faas-cli up -f spinner-controller.yml
 
 The serverless function will serve the request by checking if there are any running servers that are not doing any work based on the provided criteria.
 
-For instance, if we want to delete any servers whose CPU load is below under 50% in the ast 5 minutes, we would call:
+For instance, if we want to delete any servers whose CPU load is below under 50% in the last 5 minutes, we would call:
 
 ```cli
 curl -v \
