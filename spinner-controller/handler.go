@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -23,46 +24,56 @@ func getAPISecret(secretName string) (secretBytes []byte, err error) {
 	return secretBytes, err
 }
 
-func validAuth(apiKeyHeader string) (bool, error) {
+// func validAuth(apiKeyHeader string) (bool, error) {
+
+// 	apiSecret, err := getAPISecret("secret-api-key")
+// 	// fmt.Printf("string(apiSecret): %s\n", string(apiSecret))
+// 	if err != nil {
+// 		fmt.Printf(err.Error())
+// 		return false, err
+// 	}
+
+// 	if apiKeyHeader != "" && apiKeyHeader == string(apiSecret) {
+// 		fmt.Println("Authorization succeded.")
+// 		return true, nil
+// 	}
+
+// 	fmt.Println("Authorization failed.")
+// 	return false, nil
+// }
+
+// Handle will process incoming HTTP requests
+func Handle(w http.ResponseWriter, r *http.Request) {
+
+	// token := r.Header.Get("X-Api-Key")
+	// fmt.Printf("X-Api-Key: %s\n", token)
+
+	// authenticated, err := validAuth(token)
+	// if err != nil || !authenticated {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	w.Write([]byte(fmt.Sprintf("Authorization failed. Token is not valid.")))
+	// 	return
+	// }
 
 	apiSecret, err := getAPISecret("secret-api-key")
 	// fmt.Printf("string(apiSecret): %s\n", string(apiSecret))
 	if err != nil {
 		fmt.Printf(err.Error())
-		return false, err
-	}
-
-	if apiKeyHeader != "" && apiKeyHeader == string(apiSecret) {
-		fmt.Println("Authorization succeded.")
-		return true, nil
-	}
-
-	fmt.Println("Authorization failed.")
-	return false, nil
-}
-
-// Handle will process incoming HTTP requests
-func Handle(w http.ResponseWriter, r *http.Request) {
-
-	token := r.Header.Get("X-Api-Key")
-	// fmt.Printf("X-Api-Key: %s\n", token)
-
-	authenticated, err := validAuth(token)
-	if err != nil || !authenticated {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(fmt.Sprintf("Authorization failed. Token is not valid.")))
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(fmt.Sprintf("error getting token. Reason: %s", err.Error())))
 		return
 	}
 
-	query := r.URL.Query()
-	metricName := query.Get("metric_name")
+	token := string(apiSecret)
+
+	metricName := os.Getenv("metric_name")
 	fmt.Printf("metricName: %s", metricName)
 
-	metricThreshold := query.Get("metric_threshold")
+	metricThreshold := os.Getenv("metric_threshold")
 	fmt.Printf("metricThreshold: %s", metricThreshold)
 	mt, _ := strconv.Atoi(metricThreshold)
 
-	lastMinutes := query.Get("last_minutes")
+	lastMinutes := os.Getenv("last_minutes")
 	fmt.Printf("lastMinutes: %s", lastMinutes)
 	lm, _ := strconv.Atoi(lastMinutes)
 

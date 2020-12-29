@@ -15,5 +15,8 @@ functions:
     environment:
       read_timeout: 60s
       write_timeout: 60s
+      metric_name: "cpu"
+      metric_threshold: "50"
+      last_minutes: 5
     secrets:
       - secret-api-key
