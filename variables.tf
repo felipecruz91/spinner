@@ -24,5 +24,6 @@ variable "ssh_key_file" {
 }
 
 variable "docker_user" {
+  default     = "felipecruz"
   description = "DockerHub username to push the images"
 }

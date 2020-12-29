@@ -27,17 +27,17 @@ git clone https://github.com/felipecruz91/spinner.git
 cd spinner
 ```
 
-To create the server on Hetzner Cloud, you need to have an Hetzner API token. Remember to set it in [main.tfvars](main.tfvars).
+To create the server on Hetzner Cloud, you need to have an Hetzner API token.
 
 ```
-hcloud_token = "<YOUR_HCLOUD_TOKEN>"
+export TF_VAR_hcloud_token=<YOUR_HCLOUD_TOKEN>
 ```
 
 Initialize Terraform and deploy the infrastructure:
 
 ```cli
 terraform init
-terraform apply -var-file=main.tfvars -auto-approve
+terraform apply -auto-approve
 ```
 
 If everything went well, you should see the following output:
@@ -174,5 +174,5 @@ curl -v \
 ## Clean up
 
 ```cli
-terraform destroy -var-file=main.tfvars -auto-approve
+terraform destroy -auto-approve
 ```

@@ -30,4 +30,20 @@ resource "hcloud_server" "faasd_node" {
   location    = var.faasd_node_location
   ssh_keys    = [hcloud_ssh_key.default.name]
   user_data   = data.template_file.cloud_init.rendered
+
+  provisioner "remote-exec" {
+
+    connection {
+      type        = "ssh"
+      user        = "root"
+      host        = self.ipv4_address
+      private_key = file("~/.ssh/id_rsa")
+    }
+
+    inline = [
+      "echo 'Waiting for cloud-init to complete...'",
+      "cloud-init status --wait",
+      "echo 'Completed cloud-init!'"
+    ]
+  }
 }
