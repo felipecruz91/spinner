@@ -33,7 +33,7 @@ runcmd:
   - cd /var/lib/spinner
   - git clone https://github.com/felipecruz91/spinner.git
   - cd spinner
-  - faas-cli login -g http://localhost:8080 -p ${gw_password}
+  - echo ${gw_password} | faas-cli login -g http://localhost:8080 --password-stdin
   - echo -n ${hcloud_token} > secret-api-key.txt
   - faas-cli secret create secret-api-key --from-file=secret-api-key.txt -g http://localhost:8080
   - faas-cli secret list -g http://localhost:8080
