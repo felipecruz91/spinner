@@ -42,7 +42,7 @@ resource "hcloud_server" "faasd_node" {
 
     inline = [
       "echo 'Waiting for cloud-init to complete...'",
-      "cloud-init status --wait",
+      "cloud-init status --wait --long",
       "echo 'Completed cloud-init!'"
     ]
   }
