@@ -7,6 +7,9 @@ functions:
     lang: golang-middleware
     handler: ./spinner-controller
     image: $DOCKER_USER/spinner-controller:latest
+    annotations:
+      topic: cron-function
+      schedule: "*/1 * * * *"
     build_args:
       GO111MODULE: on
     environment:

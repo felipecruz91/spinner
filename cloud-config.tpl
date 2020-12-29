@@ -43,6 +43,10 @@ runcmd:
   - cd /var/lib/spinner
   - git clone https://github.com/felipecruz91/spinner.git
   - cd spinner
+  - cat cron-connector.yml >> /var/lib/faasd/docker-compose.yaml
+  - cat /var/lib/faasd/docker-compose.yaml
+  - systemctl restart faasd
+  - sleep 20
   - echo ${gw_password} | faas-cli login -g http://localhost:8080 --password-stdin
   - echo -n ${hcloud_token} > secret-api-key.txt
   - faas-cli secret create secret-api-key --from-file=secret-api-key.txt -g http://localhost:8080
