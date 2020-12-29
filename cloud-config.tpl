@@ -2,10 +2,19 @@
 ssh_authorized_keys:
   - ${ssh_key}
 
+groups:
+  - docker
+
+# Add default auto created user to docker group
+system_info:
+  default_user:
+    groups: [docker]
+
 package_update: true
 
 packages:
   - git
+  - docker.io
   - runc
 
 runcmd:
@@ -29,6 +38,7 @@ runcmd:
   - curl -sSLf https://cli.openfaas.com | sh
   - sleep 5 && journalctl -u faasd --no-pager
   - systemctl daemon-reload
+  - sleep 60
   - mkdir -p /var/lib/spinner
   - cd /var/lib/spinner
   - git clone https://github.com/felipecruz91/spinner.git
@@ -41,5 +51,5 @@ runcmd:
   - sed -i s/\$FAASD_NODE_IP/localhost/g spinner-controller.yml
   - sed -i s/\$DOCKER_USER/${docker_user}/g spinner.yml
   - sed -i s/\$DOCKER_USER/${docker_user}/g spinner-controller.yml
-  - faas-cli up -f spinner.yml
-  - faas-cli up -f spinner-controller.yml
+  - faas-cli deploy -f spinner.yml
+  - faas-cli deploy -f spinner-controller.yml
