@@ -16,8 +16,10 @@ resource "random_password" "password" {
 data "template_file" "cloud_init" {
   template = file("cloud-config.tpl")
   vars = {
-    gw_password = random_password.password.result,
-    ssh_key     = data.local_file.ssh_key.content
+    gw_password  = random_password.password.result,
+    ssh_key      = data.local_file.ssh_key.content,
+    docker_user  = var.docker_user,
+    hcloud_token = var.hcloud_token
   }
 }
 

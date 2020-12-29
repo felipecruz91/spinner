@@ -22,3 +22,7 @@ variable "ssh_key_file" {
   default     = "~/.ssh/id_rsa.pub"
   description = "Path to the SSH public key file"
 }
+
+variable "docker_user" {
+  description = "DockerHub username to push the images"
+}

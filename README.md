@@ -115,7 +115,7 @@ Let's replace the following placeholders defined in [spinner.yml](spinner.yml) w
 
 ```bash
 sed -i s/\$FAASD_NODE_IP/$FAASD_NODE_IP/g spinner.yml
-sed -i s/\${DOCKER_USER}/$DOCKER_USER/g spinner.yml
+sed -i s/\$DOCKER_USER/$DOCKER_USER/g spinner.yml
 ```
 
 Finally, build the image, push it to DockerHub and deploy it to the faasd node:
@@ -152,7 +152,7 @@ Similarly, let's replace the following placeholders defined in [spinner-controll
 
 ```bash
 sed -i s/\$FAASD_NODE_IP/$FAASD_NODE_IP/g spinner-controller.yml
-sed -i s/\${DOCKER_USER}/$DOCKER_USER/g spinner-controller.yml
+sed -i s/\$DOCKER_USER/$DOCKER_USER/g spinner-controller.yml
 ```
 
 Finally, build the image, push it to DockerHub and deploy it to the faasd node:

@@ -29,3 +29,17 @@ runcmd:
   - curl -sSLf https://cli.openfaas.com | sh
   - sleep 5 && journalctl -u faasd --no-pager
   - systemctl daemon-reload
+  - mkdir -p /var/lib/spinner
+  - cd /var/lib/spinner
+  - git clone https://github.com/felipecruz91/spinner.git
+  - cd spinner
+  - faas-cli login -g http://localhost:8080 -p ${gw_password}
+  - echo -n ${hcloud_token} > secret-api-key.txt
+  - faas-cli secret create secret-api-key --from-file=secret-api-key.txt -g http://localhost:8080
+  - faas-cli secret list -g http://localhost:8080
+  - sed -i s/\$FAASD_NODE_IP/localhost/g spinner.yml
+  - sed -i s/\$FAASD_NODE_IP/localhost/g spinner-controller.yml
+  - sed -i s/\$DOCKER_USER/${docker_user}/g spinner.yml
+  - sed -i s/\$DOCKER_USER/${docker_user}/g spinner-controller.yml
+  - faas-cli up -f spinner.yml
+  - faas-cli up -f spinner-controller.yml

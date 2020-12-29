@@ -6,7 +6,7 @@ functions:
   spinner-controller:
     lang: golang-middleware
     handler: ./spinner-controller
-    image: ${DOCKER_USER}/spinner-controller:latest
+    image: $DOCKER_USER/spinner-controller:latest
     build_args:
       GO111MODULE: on
     environment:
