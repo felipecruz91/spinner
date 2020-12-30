@@ -21,11 +21,46 @@ The serverless function is deployed on the cheapest VPS on Hetzner Cloud (runnin
 - [faas-cli](https://github.com/openfaas/faas-cli)
 - Terraform
 
-## Infrastructure provisioning
+## Provision infrastructure
 
 As of today, the cheapest server type on Hetzner Cloud is `cx11` (1vCPU, 2GB RAM for 3EUR/month). Learn more about the wide range of server types [here](https://www.hetzner.com/cloud).
 
 Let's create a `cx11` server with `faasd` installed. We'll be using [cloud-init](https://cloudinit.readthedocs.io/en/latest/) to initialize the server with `faasd`, as per the [cloud-config.tpl](cloud-config.tpl) file.
+
+## Overview
+
+To make it easier to provide all prerequisites like the OpenFaaS and Terraform command line utilities, we provide a container image and use it for bootstrapping now.
+
+```cli
+# Build the bootstrap container
+docker build -t spinner-infra-boostrap .
+
+# Exec into the bootstrap container
+docker run --rm -it \
+  -e TF_VAR_hcloud_token=<HCLOUD_TOKEN> \
+  -v ~/.ssh:/root/.ssh \
+  spinner-infra-boostrap
+```
+
+## Bootstrap the infrastructure
+
+```cli
+# Initialize Terraform
+/work # terraform init
+# Create the infrastructure in Hetzner Cloud
+/work # terraform apply -auto-approve
+```
+
+## Troubleshooting
+
+The cloud-init output log file (/var/log/cloud-init-output.log) captures console output so it is easy to debug your scripts following a launch if the instance does not behave the way you intended.
+
+```
+ssh root@<faasd-node-ip>
+cat /var/log/cloud-init-output.log
+```
+
+## Without Docker
 
 ```cli
 git clone https://github.com/felipecruz91/spinner.git

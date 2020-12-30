@@ -1,6 +1,6 @@
-.env
 .vscode
 build
+template
 
 # Compiled files
 *.tfstate
@@ -11,5 +11,3 @@ build
 .terraform/
 
 *.conf
-
-template
