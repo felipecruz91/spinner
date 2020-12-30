@@ -48,12 +48,9 @@ runcmd:
   - systemctl restart faasd
   - sleep 20
   - echo ${gw_password} | faas-cli login -g http://localhost:8080 --password-stdin
-  - echo -n ${hcloud_token} > secret-api-key.txt
-  - faas-cli secret create secret-api-key --from-file=secret-api-key.txt -g http://localhost:8080
+  - echo ${hcloud_token} | faas-cli secret create secret-api-key -g http://localhost:8080
   - faas-cli secret list -g http://localhost:8080
-  - sed -i s/\$FAASD_NODE_IP/localhost/g spinner.yml
-  - sed -i s/\$FAASD_NODE_IP/localhost/g spinner-controller.yml
-  - sed -i s/\$DOCKER_USER/${docker_user}/g spinner.yml
-  - sed -i s/\$DOCKER_USER/${docker_user}/g spinner-controller.yml
+  - sed -i s/\$FAASD_NODE_IP/localhost/g spinner.yml spinner-controller.yml
+  - sed -i s/\$DOCKER_USER/${docker_user}/g spinner.yml spinner-controller.yml
   - faas-cli deploy -f spinner.yml
   - faas-cli deploy -f spinner-controller.yml

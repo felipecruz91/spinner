@@ -16,6 +16,11 @@ The serverless function is deployed on the cheapest VPS on Hetzner Cloud (runnin
 
 - Saving costs for large and expensive servers in Hetzner Cloud provider.
 
+## Prerequisites
+
+- [faas-cli](https://github.com/openfaas/faas-cli)
+- Terraform
+
 ## Infrastructure provisioning
 
 As of today, the cheapest server type on Hetzner Cloud is `cx11` (1vCPU, 2GB RAM for 3EUR/month). Learn more about the wide range of server types [here](https://www.hetzner.com/cloud).

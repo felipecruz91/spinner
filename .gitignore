@@ -12,6 +12,4 @@ build
 
 *.conf
 
-secret-api-key.txt
-
 template
