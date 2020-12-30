@@ -1,5 +1,7 @@
 # spinner ⚡🔄
 
+![ci](https://github.com/felipecruz91/spinner/workflows/ci/badge.svg)
+
 ## Introduction
 
 Serverless function built with [OpenFaaS](https://www.openfaas.com/) to spin new servers on Hetzner Cloud.
@@ -30,6 +32,15 @@ Let's create a `cx11` server with `faasd` installed. We'll be using [cloud-init]
 ## Overview
 
 To make it easier to provide all prerequisites like the OpenFaaS and Terraform command line utilities, we provide a container image and use it for bootstrapping now.
+
+```cli
+docker run --rm -it \
+  -e TF_VAR_hcloud_token=<HCLOUD_TOKEN> \
+  -v ~/.ssh:/root/.ssh \
+  felipecruz/spinner-infra-boostrap
+```
+
+Or you could build and run it yourself:
 
 ```cli
 # Build the bootstrap container
