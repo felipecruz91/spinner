@@ -14,7 +14,7 @@ functions:
       GO111MODULE: on
     environment:
       read_timeout: 60s
-      write_timeout: 60s
+      write_timeout: 3s
       metric_name: "cpu"
       metric_threshold: "50"
       last_minutes: 5

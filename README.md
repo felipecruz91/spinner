@@ -43,6 +43,10 @@ docker run --rm -it \
 Or you could build and run it yourself:
 
 ```cli
+# Clone the repository
+git clone https://github.com/felipecruz91/spinner.git
+cd spinner
+
 # Build the bootstrap container
 docker build -t spinner-infra-boostrap .
 
@@ -70,23 +74,7 @@ login_cmd = faas-cli login -g http://<faasd-node-ip>:8080 -p <random-password>
 password = <random-password>
 ```
 
-The server should have been created with `faasd` installed.
-
 ![faasd-node](docs/images/faasd-node.PNG)
-
-Give `faasd` a few minutes to startup as the server will be initializing with the cloud-init configuration right after it has booted. If needed, you could SSH into the server and check the status of the `faasd` service. It should say `active (running).
-
-```cli
-ssh root@$FAASD_NODE_IP 'systemctl status faasd'
-
-systemctl status faasd
-● faasd.service - faasd
-     Loaded: loaded (/lib/systemd/system/faasd.service; enabled; vendor preset: enabled)
-     Active: active (running) since Mon 2020-12-28 15:14:15 CET; 12min ago
-...
-(ommited lines)
-...
-```
 
 Then, access the OpenFaaS UI at http://$FAASD_NODE_IP:8080/ using the username `admin` and the random password generated previously.
 
@@ -116,7 +104,7 @@ and deploy the spinner-controller function again:
 
 ```cli
 faas-cli login -g http://<faasd-node-ip>:8080 -p <password>
-faas-cli deploy -f spinner-controller.yml
+faas-cli deploy -g http://<faasd-node-ip>:8080 -f spinner-controller.yml
 ```
 
 Once deployed, it will be automatically called based on the cron schedule.
@@ -130,6 +118,20 @@ exit
 ```
 
 ## Troubleshooting
+
+The server should have initialized with the cloud-init configuration right after it has booted. If needed, you could SSH into the server and check the status of the `faasd` service. It should say `active (running)`.
+
+```cli
+ssh root@$FAASD_NODE_IP 'systemctl status faasd'
+
+systemctl status faasd
+● faasd.service - faasd
+     Loaded: loaded (/lib/systemd/system/faasd.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2020-12-28 15:14:15 CET; 12min ago
+...
+(ommited lines)
+...
+```
 
 The cloud-init output log file (/var/log/cloud-init-output.log) captures console output so it is easy to debug your scripts following a launch if the instance does not behave the way you intended.
 
