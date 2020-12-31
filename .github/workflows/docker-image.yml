@@ -16,7 +16,7 @@ jobs:
       - name: Pull template
         uses: docker://openfaas/faas-cli:latest-root
         with:
-          args: template store pull golang-http
+          args: template store pull golang-middleware
       - name: Run shrinkwrap build
         uses: docker://openfaas/faas-cli:latest-root
         with:
