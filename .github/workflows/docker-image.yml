@@ -11,7 +11,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install faas-cli
-        run: curl -sSL https://cli.openfaas.com | sh
+        run: |
+          curl -sSL https://cli.openfaas.com | sh
+          sudo cp faas-cli /usr/local/bin/faas-cli
+          sudo ln -sf /usr/local/bin/faas-cli /usr/local/bin/faas
       - name: Build and push spinner function
         run: |
           sed -i s/\$DOCKER_USER/${{ secrets.DOCKERHUB_USERNAME }}/g spinner.yml
