@@ -55,7 +55,7 @@ jobs:
       - name: Run shrinkwrap build
         uses: docker://openfaas/faas-cli:latest-root
         with:
-          args: build -f spinner.yml --shrinkwrap
+          args: build -f spinner-controller.yml --shrinkwrap
       - name: Login to DockerHub
         if: success()
         uses: docker/login-action@v1
