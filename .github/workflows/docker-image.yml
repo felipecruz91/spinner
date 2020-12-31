@@ -5,7 +5,19 @@ on:
     branches: main
 
 jobs:
-  main:
+  spinner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install faas-cli
+        run: curl -sSL https://cli.openfaas.com | sh
+      - name: Build and push spinner function
+        run: |
+          sed -i s/\$DOCKER_USER/${{ secrets.DOCKERHUB_USERNAME }}/g spinner.yml
+          faas-cli publish -f spinner.yml
+
+  spinner-infra-boostrap:
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
