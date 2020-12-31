@@ -6,10 +6,6 @@
 
 Serverless functions built with [OpenFaaS](https://www.openfaas.com/) to spin new servers on Hetzner Cloud and shut them down automatically when they are unutilized.
 
-[![asciicast](https://asciinema.org/a/381485.svg)](https://asciinema.org/a/381485)
-
-The serverless function is deployed on the cheapest VPS on Hetzner Cloud (running `faasd`).
-
 ## Use-cases
 
 - Scaling nodes horizontally for video-encoding based on incoming HTTP requests.
@@ -41,8 +37,8 @@ docker run --rm -it \
   felipecruz/spinner-infra-boostrap
 ```
 
-The `-e TF_VAR_hcloud_token=<HCLOUD_TOKEN>` env. var is required to authenticate to Hetzner Cloud and provision the infrastructure.
-The `-v ~/.ssh:/root/.ssh` parameter is required to configure the Hetzner server with your SSH key so that you can SSH into it if needed.
+- The `-e TF_VAR_hcloud_token=<HCLOUD_TOKEN>` env. var is required to authenticate to Hetzner Cloud and provision the infrastructure.
+- The `-v ~/.ssh:/root/.ssh` parameter is required to configure the Hetzner server with your SSH key so that you can SSH into it if needed.
 
 Or you could build and run it yourself:
 
