@@ -77,7 +77,10 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 			statusCode = http.StatusInternalServerError
 		} else {
 			message = fmt.Sprintf("Server '%s' created", server.Name)
-			statusCode = http.StatusCreated
+			redirectURL := fmt.Sprintf("http://%s%s", r.Host, r.URL)
+			fmt.Printf("Redirect URL: %s", redirectURL)
+			http.Redirect(w, r, redirectURL, http.StatusMovedPermanently)
+			return
 		}
 	} else {
 		message = fmt.Sprintf("No need to spin up any new servers.")
