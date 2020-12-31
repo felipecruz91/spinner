@@ -40,6 +40,41 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/spinner:latest
           build-args: |
             GO111MODULE=on
+  spinner-controller-func-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Define ENV VARS
+        id: define_env
+        run: echo "::set-output name=github-sha-short::$(echo $GITHUB_SHA | cut -c 1-7)"
+      - name: Pull template
+        uses: docker://openfaas/faas-cli:latest-root
+        with:
+          args: template store pull golang-middleware
+      - name: Run shrinkwrap build
+        uses: docker://openfaas/faas-cli:latest-root
+        with:
+          args: build -f spinner.yml --shrinkwrap
+      - name: Login to DockerHub
+        if: success()
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Build and Push the OpenFaaS function
+        uses: docker/build-push-action@v2
+        with:
+          context: ./build/spinner-controller/
+          file: ./build/spinner-controller/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/spinner-controller:latest-${{ steps.define_env.outputs.github-sha-short }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/spinner-controller:latest
+          build-args: |
+            GO111MODULE=on
   spinner-infra-boostrap:
     runs-on: ubuntu-latest
     steps:
